@@ -1,5 +1,4 @@
 #include QMK_KEYBOARD_H
-#include "keymap_jp.h"
 
 
 #ifdef RGBLIGHT_ENABLE
@@ -24,10 +23,7 @@ enum custom_keycodes {
   RAISE,
   ADJUST,
   BACKLIT,
-  RGBRST,
-  WN_SCLN, // タップでJISの「;」、シフトでJISの「:」
-  WN_QUOT, // タップでJISの「'」、シフトでJISの「"」
-  WN_MINS, // タップでJISの「-」、シフトでJISの「=」
+  RGBRST
 };
 
 enum macro_keycodes {
@@ -39,9 +35,9 @@ enum macro_keycodes {
 const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
   [_QWERTY] = LAYOUT_split_3x6_3( \
   //,-----------------------------------------------------.                    ,-----------------------------------------------------.
-       KC_TAB,    KC_Q,    KC_W,    KC_E,    KC_R,    KC_T,                         KC_Y,    KC_U,    KC_I,    KC_O,   KC_P,  WN_MINS,\
+       KC_TAB,    KC_Q,    KC_W,    KC_E,    KC_R,    KC_T,                         KC_Y,    KC_U,    KC_I,    KC_O,   KC_P,  KC_MINS,\
   //|--------+--------+--------+--------+--------+--------|                    |--------+--------+--------+--------+--------+--------|
-      KC_LCTL,    KC_A,    KC_S,    KC_D,    KC_F,    KC_G,                         KC_H,    KC_J,    KC_K,    KC_L, WN_SCLN, WN_QUOT,\
+      KC_LCTL,    KC_A,    KC_S,    KC_D,    KC_F,    KC_G,                         KC_H,    KC_J,    KC_K,    KC_L, KC_SCLN, KC_QUOT,\
   //|--------+--------+--------+--------+--------+--------|                    |--------+--------+--------+--------+--------+--------|
       KC_LSFT,    KC_Z,    KC_X,    KC_C,    KC_V,    KC_B,                         KC_N,    KC_M, KC_COMM,  KC_DOT, KC_SLSH, KC_RSFT,\
   //|--------+--------+--------+--------+--------+--------+--------|  |--------+--------+--------+--------+--------+--------+--------|
@@ -52,11 +48,11 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
 
   [_LOWER] = LAYOUT_split_3x6_3( \
   //,-----------------------------------------------------.                    ,-----------------------------------------------------.
-       KC_ESC, JP_EXLM,   JP_AT, JP_HASH,  JP_DLR, JP_PERC,                      JP_CIRC, JP_AMPR, JP_ASTR, JP_LPRN, JP_RPRN,  KC_DEL,\
+       KC_ESC, KC_EXLM,   KC_AT, KC_HASH,  KC_DLR, KC_PERC,                      KC_CIRC, KC_AMPR, KC_ASTR, KC_LPRN, KC_RPRN,  KC_DEL,\
   //|--------+--------+--------+--------+--------+--------|                    |--------+--------+--------+--------+--------+--------|
-      _______, JP_LCBR, JP_RCBR, JP_LBRC, JP_RBRC, XXXXXXX,                      KC_LEFT, KC_DOWN,   KC_UP,KC_RIGHT, JP_PIPE,  JP_GRV,\
+      _______, KC_LCBR, KC_RCBR, KC_LBRC, KC_RBRC, XXXXXXX,                      KC_LEFT, KC_DOWN,   KC_UP,KC_RIGHT, KC_PIPE,  KC_GRV,\
   //|--------+--------+--------+--------+--------+--------|                    |--------+--------+--------+--------+--------+--------|
-      _______, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX,                      JP_PLUS,  JP_EQL, _______, JP_TILD, JP_BSLS, _______,\
+      _______, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX,                      KC_PLUS,  KC_EQL, _______, KC_TILD, KC_BSLS, _______,\
   //|--------+--------+--------+--------+--------+--------+--------|  |--------+--------+--------+--------+--------+--------+--------|
                                           _______, _______, XXXXXXX,    KC_BSPC, _______, _______ \
                                       //`--------------------------'  `--------------------------'
@@ -64,11 +60,11 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
 
   [_RAISE] = LAYOUT_split_3x6_3( \
   //,-----------------------------------------------------.                    ,-----------------------------------------------------.
-       KC_F14, JP_EXLM,   JP_AT, JP_HASH,  JP_DLR, JP_PERC,                      JP_CIRC, JP_AMPR, JP_ASTR, JP_LPRN, JP_RPRN,  KC_F13,\
+       KC_F14, KC_EXLM,   KC_AT, KC_HASH,  KC_DLR, KC_PERC,                      KC_CIRC, KC_AMPR, KC_ASTR, KC_LPRN, KC_RPRN,  KC_F13,\
   //|--------+--------+--------+--------+--------+--------|                    |--------+--------+--------+--------+--------+--------|
       _______,    KC_1,    KC_2,    KC_3,    KC_4,    KC_5,                         KC_6,    KC_7,    KC_8,    KC_9,    KC_0, _______,\
   //|--------+--------+--------+--------+--------+--------|                    |--------+--------+--------+--------+--------+--------|
-      _______, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX,                      JP_PLUS,  JP_EQL, _______, _______, _______, _______,\
+      _______, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX,                      KC_PLUS,  KC_EQL, _______, _______, _______, _______,\
   //|--------+--------+--------+--------+--------+--------+--------|  |--------+--------+--------+--------+--------+--------+--------|
                                           _______, _______,  KC_SPC,    XXXXXXX, _______, _______ \
                                       //`--------------------------'  `--------------------------'
@@ -162,8 +158,6 @@ void iota_gfx_task_user(void) {
 #endif//SSD1306OLED
 
 bool process_record_user(uint16_t keycode, keyrecord_t *record) {
-  static bool lshift = false;
-  static bool rshift = false;
   if (record->event.pressed) {
 #ifdef SSD1306OLED
     set_keylog(keycode, record);
@@ -219,54 +213,6 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
           RGB_current_mode = rgblight_config.mode;
         }
       #endif
-      break;
-    case WN_SCLN:
-      if (record->event.pressed) {
-        lshift = keyboard_report->mods & MOD_BIT(KC_LSFT);
-        rshift = keyboard_report->mods & MOD_BIT(KC_RSFT);
-        if (lshift || rshift) {
-          if (lshift) unregister_code(KC_LSFT);
-          if (rshift) unregister_code(KC_RSFT);
-          register_code(JP_COLN);
-          unregister_code(JP_COLN);
-          if (lshift) register_code(KC_LSFT);
-          if (rshift) register_code(KC_RSFT);
-        } else {
-          register_code(JP_SCLN);
-          unregister_code(JP_SCLN);
-        }
-      }
-      return false;
-      break;
-    case WN_QUOT:
-      if (record->event.pressed) {
-        lshift = keyboard_report->mods & MOD_BIT(KC_LSFT);
-        rshift = keyboard_report->mods & MOD_BIT(KC_RSFT);
-        if (lshift || rshift) {
-          register_code(JP_2);
-          unregister_code(JP_2);
-        } else {
-          register_code(KC_LSFT);
-          register_code(JP_7);
-          unregister_code(JP_7);
-          unregister_code(KC_LSFT);
-        }
-      }
-      return false;
-      break;
-    case WN_MINS:
-      if (record->event.pressed) {
-        lshift = keyboard_report->mods & MOD_BIT(KC_LSFT);
-        rshift = keyboard_report->mods & MOD_BIT(KC_RSFT);
-        if (lshift || rshift) {
-          register_code(JP_BSLS);
-          unregister_code(JP_BSLS);
-        } else {
-          register_code(JP_MINS);
-          unregister_code(JP_MINS);
-        }
-      }
-      return false;
       break;
   }
   return true;
